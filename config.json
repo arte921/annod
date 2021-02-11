@@ -1,0 +1,15 @@
+{
+    "starttijd": "0600",
+    "dag": 250,
+    "minimum_gemiddelde_snelheid": 50,
+    "snelheidsmetingen_begin_ritjes": 1,
+    "minimum_overstaptijd_minuten": 3,
+    "maximum_overstaptijd_minuten": 15,
+    "toegestane_treintypen": ["IC", "ICD", "ICE", "S"],
+    "speelduur_minuten": "120",
+    "start_station": "nm",
+    "maximum_ritjes_stilstand": 0,
+    "minimale_update_afstand": 300,
+    "dubbele_features": ["srnstd", "srnec", "rmec", "zlmp"],
+    "aantal_dubbele_features_passages": 2
+}

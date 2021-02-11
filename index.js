@@ -1,8 +1,13 @@
-const leesIFFSync = require('./functies/leesIFFSync.js');
+
+const fs = require("fs");
+const path = require("path");const leesIFFSync = require('./functies/leesIFFSync.js');
+
 const readJSONSync = require('./functies/readJSONSync.js');
 const stationAfstandKilonet = require('./functies/stationAfstandKilonet.js');
 
-const config = readJSONSync("config");
+const config = JSON.parse(fs.readFileSync("config.json"));
+
+const config = readJSONSync();
 
 const splitRegels = (tekst) => tekst.split(/\r?\n/);
 const stripSpaties = (tekst) => tekst.replace(/ +$/, "");
