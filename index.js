@@ -1,7 +1,5 @@
 const stationAfstandKilonet = require('./functies/stationAfstandKilonet.js');
 const leesJSONSync = require('./functies/leesJSONSync.js');
-const schrijfJSON = require('./functies/schrijfJSON.js');
-const wacht = require('./functies/wacht.js');
 
 const {
     tijdNaarMinutenGetal,
@@ -13,6 +11,7 @@ const {
     ritVanafStation,
     stationVertrekkenMoment
 } = require('./functies/interpreters.js');
+const schrijfJSONSync = require('./functies/schrijfJSONSync.js');
 
 const config = leesJSONSync("config");
 const vertrekken = leesJSONSync('vertrekken');
@@ -59,7 +58,6 @@ const berekenRitjes = (aankomstTijdMinuten, station, negeerbareFeaturesReferenti
                 afstand: huidigeAfstand,
                 route: routeString
             });
-            schrijfRoutes();
         }
     }
 
@@ -100,20 +98,6 @@ const berekenRitjes = (aankomstTijdMinuten, station, negeerbareFeaturesReferenti
         }
     }
 };
-
-let schrijvend = false;
-let wachtend = false;
-const schrijfRoutes = async () => {
-    if (wachtend) return;
-    while (schrijvend) {
-        wachtend = true;
-        await wacht(100);
-    }
-    kandidaatRoutes.sort((a, b) => b.afstand - a.afstand);
-    await schrijfJSON(kandidaatRoutes, 'resultaat');
-    wachtend = false;
-    schrijvend = false;
-}
 
 console.log("begin");
 
