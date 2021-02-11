@@ -1,11 +1,8 @@
 const readJSONSync = require('./readJSONSync.js');
-const coordinaatAfstand = require('./coordinaatAfstand.js');
-const spoorkaart = readJSONSync("spoorkaart").payload.features;
 const config = readJSONSync("config");
-const leesCSVSync = require('./leesCSVSync.js');
 
-const kilonet = leesCSVSync("kilonetnew");
-
+const leesIFFSync = require('./leesIFFSync.js');
+const kilonet = leesIFFSync("kilonetnew");
 
 module.exports = (station1, station2, negeerbareFeatures) => {
     const station1KleineLetters = station1.toLowerCase();
