@@ -1,9 +1,18 @@
+const leesJSONSync = require('./leesJSONSync.js');
+
 const {
     splitRegels,
     stripSpaties,
     splitEntries,
     tijdNaarMinutenGetal
 } = require('./utility.js');
+
+
+const config = leesJSONSync("config");
+const vertrekken = leesJSONSync('vertrekken');
+const stations = leesJSONSync('stations');
+const dienstregeling = leesJSONSync('dienstregeling');
+const voetnoten = leesJSONSync('voetnoten');
 
 // rekent eindstation standaard niet mee
 // > beginstation

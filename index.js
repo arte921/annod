@@ -1,62 +1,30 @@
 const stationAfstandKilonet = require('./functies/stationAfstandKilonet.js');
 const leesJSONSync = require('./functies/leesJSONSync.js');
-const leesIFFSync = require('./functies/leesIFFSync.js');
 
 const {
-    splitRegels,
-    splitEntries,
     tijdNaarMinutenGetal,
     minutenGetalNaarTijd,
     haalEnkeleRegelOp
 } = require('./functies/utility.js');
 
 const {
-    stopStations,
     ritVanafStation,
-    vertrekTijd,
     stationVertrekkenMoment
 } = require('./functies/interpreters.js');
 
 const config = leesJSONSync("config");
+const vertrekken = leesJSONSync('vertrekken');
+const stations = leesJSONSync('stations');
 
 const startTijdMinuten = tijdNaarMinutenGetal(config.starttijd);
 const eindTijdMinuten = startTijdMinuten + config.speelduur_minuten;
 
-const dienstregeling = leesIFFSync('timetbls').split("#").map((entry) => "#" + entry).slice(1);
-const voetnoten = leesIFFSync('footnote').split("#").slice(1).map((entry) => splitRegels(entry)[1]);
-
-// console.log(dienstregeling[29676]);
-// console.log(rijdtOpDag(dienstregeling[29676], config.dag));
-
-const stations = splitRegels(leesIFFSync('stations'))
-    .slice(1)
-    .map(splitEntries)
-    .filter((kandidaat) => kandidaat[4] == "NL");
-
 const stationsNaam = (stationsCode) => stations.find((kandidaat) => stationsCode == kandidaat[1])[9];
-
-const vertrekken = {};
-
-for (const rit of dienstregeling) {
-    const stops = stopStations(rit);
-    for (const station of stations) {
-        const stationsCode = station[1];
-
-        if (stops.includes(stationsCode)) {
-            if (!vertrekken[stationsCode]) vertrekken[stationsCode] = [];
-            vertrekken[stationsCode].push({
-                rit: rit,
-                vertrektijd: tijdNaarMinutenGetal(vertrekTijd(rit, stationsCode))
-            });
-        }
-    }
-}
 
 let kandidaatRoutes = [];
 let meesteAfstand = 0;
 
 const berekenRitjes = (aankomstTijdMinuten, station, negeerbareFeaturesReferentie, huidigeAfstand, routeTotNuToe, routeDeltas, nietVolgen) => {
-    // console.log(aankomstTijdMinuten, station, negeerbareFeaturesReferentie, huidigeAfstand, routeTotNuToe, routeDeltas, nietVolgen);
     const vroegsteVertrektijd = aankomstTijdMinuten + config.minimum_overstaptijd_minuten;
 
     // check of rit tot nu toe nog voldoet
@@ -132,6 +100,12 @@ const berekenRitjes = (aankomstTijdMinuten, station, negeerbareFeaturesReferenti
     }
 };
 
+
+const schrijfRoutes = async () => {
+    kandidaatRoutes.sort((a, b) => b.afstand - a.afstand);
+    await schrijfJSON(kandidaatRoutes, 'resultaat');
+}
+
 console.log("begin");
 
 berekenRitjes(
@@ -143,9 +117,3 @@ berekenRitjes(
     [],
     ''
 );
-
-
-const schrijfRoutes = async () => {
-    kandidaatRoutes.sort((a, b) => b.afstand - a.afstand);
-    await writeJSON(kandidaatRoutes, 'resultaat');
-}
