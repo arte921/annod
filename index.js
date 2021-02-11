@@ -22,7 +22,6 @@ const eindTijdMinuten = startTijdMinuten - - config.speelduur_minuten;
 
 const stationsNaam = (stationsCode) => stations.find((kandidaat) => stationsCode == kandidaat[1])[9];
 
-let kandidaatRoutes = [];
 let meesteAfstand = 0;
 
 const berekenRitjes = (aankomstTijdMinuten, station, negeerbareFeaturesReferentie, huidigeAfstand, routeTotNuToe, routeDeltas, nietVolgen) => {
@@ -51,10 +50,8 @@ const berekenRitjes = (aankomstTijdMinuten, station, negeerbareFeaturesReferenti
             minutenGetalNaarTijd
         ][index % 3](deel)).join("\n") + "\n";
         
-        console.log(routeString);
-
         if (meesteAfstand >= config.minimale_update_afstand) {
-            kandidaatRoutes.push(routeString);
+            console.log(routeString);
         }
     }
 
@@ -95,6 +92,8 @@ const berekenRitjes = (aankomstTijdMinuten, station, negeerbareFeaturesReferenti
         }
     }
 };
+
+console.log("==========BEGIN==========");
 
 berekenRitjes(
     startTijdMinuten,
