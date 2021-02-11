@@ -1,5 +1,5 @@
-const readJSONSync = require('./readJSONSync.js');
-const config = readJSONSync("config");
+const leesJSONSync = require('./leesJSONSync.js');
+const config = leesJSONSync("config");
 
 const {
     splitRegels,

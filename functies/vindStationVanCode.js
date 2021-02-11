@@ -1,4 +1,4 @@
-const readJSONSync = require('./readJSONSync.js');
-const stations = readJSONSync("stations").payload;
+const leesJSONSync = require('./leesJSONSync.js');
+const stations = leesJSONSync("stations").payload;
 
 module.exports = (stationsNaam) => stations.find((kandidaatStation) => kandidaatStation.code == stationsNaam);
