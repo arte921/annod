@@ -45,19 +45,16 @@ const berekenRitjes = (aankomstTijdMinuten, station, negeerbareFeaturesReferenti
 
     if (huidigeAfstand > meesteAfstand) {
         meesteAfstand = huidigeAfstand;
-        const routeString = routeTotNuToe.map((deel, index) => [
+        const routeString = "afstand: " + (Math.round(huidigeAfstand * 10) / 10) + " km\n" + routeTotNuToe.map((deel, index) => [
             minutenGetalNaarTijd,
             stationsNaam,
             minutenGetalNaarTijd
-        ][index % 3](deel)).join("\n");
+        ][index % 3](deel)).join("\n") + "\n";
         
-        console.log(huidigeAfstand, routeString);
+        console.log(routeString);
 
         if (meesteAfstand >= config.minimale_update_afstand) {
-            kandidaatRoutes.push({
-                afstand: huidigeAfstand,
-                route: routeString
-            });
+            kandidaatRoutes.push(routeString);
         }
     }
 
@@ -98,8 +95,6 @@ const berekenRitjes = (aankomstTijdMinuten, station, negeerbareFeaturesReferenti
         }
     }
 };
-
-console.log("begin");
 
 berekenRitjes(
     startTijdMinuten,
