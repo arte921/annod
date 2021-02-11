@@ -1,17 +1,17 @@
 const stationAfstandKilonet = require('./functies/stationAfstandKilonet.js');
 const readJSONSync = require('./functies/readJSONSync.js');
 const leesIFFSync = require('./functies/leesIFFSync.js');
+
+const {
+    splitRegels,
+    stripSpaties,
+    splitEntries,
+    tijdNaarMinutenGetal,
+    minutenGetalNaarTijd,
+    haalEnkeleRegelOp
+} = require('./functies/utility.js');
+
 const config = readJSONSync("config");
-
-const splitRegels = (tekst) => tekst.split(/\r?\n/);
-const stripSpaties = (tekst) => tekst.replace(/ +$/, "");
-const splitEntries = (tekst) => tekst.split(',').map(stripSpaties);
-const tijdNaarMinutenGetal = (tijd) => (60 * (tijd.substring(0, 2) - 0)) + (tijd.substring(2, 4) - 0);
-const getalBeginNullen = (getal, totaleLengte = 2) => ("0".repeat(totaleLengte) + getal).slice(-totaleLengte);
-const minutenGetalNaarTijd = (minuten) => getalBeginNullen(Math.floor(minuten / 60)) + getalBeginNullen(minuten % 60);
-
-const haalEnkeleRegelOp = (rit, sleutel) => splitEntries(splitRegels(rit)
-    .find((regel) => regel.charAt(0) == sleutel).substring(1));
 
 // rekent eindstation standaard niet mee
 // > beginstation
@@ -117,7 +117,7 @@ let meesteAfstand = 0;
 
 const berekenRitjes = (aankomstTijdMinuten, station, negeerbareFeaturesReferentie, huidigeAfstand, routeTotNuToe, routeDeltas, nietVolgen) => {
     // console.log(aankomstTijdMinuten, station, negeerbareFeaturesReferentie, huidigeAfstand, routeTotNuToe, routeDeltas, nietVolgen);
-    const vroegsteVertrektijd = aankomstTijdMinuten + config.minimum_overstaptijd_seconden / 60;
+    const vroegsteVertrektijd = aankomstTijdMinuten + config.minimum_overstaptijd_minuten;
 
     // check of rit tot nu toe nog voldoet
     if (
@@ -131,7 +131,7 @@ const berekenRitjes = (aankomstTijdMinuten, station, negeerbareFeaturesReferenti
         ) || !vertrekken[station]
     ) return;
 
-    const laatsteVertrekTijd = aankomstTijdMinuten + config.maximum_overstaptijd_seconden / 60;
+    const laatsteVertrekTijd = aankomstTijdMinuten + config.maximum_overstaptijd_minuten;
     let negeerbareFeatures = [...negeerbareFeaturesReferentie];
 
     if (huidigeAfstand > meesteAfstand) {

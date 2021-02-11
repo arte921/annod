@@ -1,8 +1,13 @@
 const readJSONSync = require('./readJSONSync.js');
 const config = readJSONSync("config");
 
+const {
+    splitRegels,
+    splitEntries
+} = require('./utility.js');
+
 const leesIFFSync = require('./leesIFFSync.js');
-const kilonet = leesIFFSync("kilonetnew");
+const kilonet = splitRegels(leesIFFSync("kilonetnew")).map(splitEntries);
 
 module.exports = (station1, station2, negeerbareFeatures) => {
     const station1KleineLetters = station1.toLowerCase();
