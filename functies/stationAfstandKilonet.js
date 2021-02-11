@@ -24,5 +24,7 @@ module.exports = (station1, station2, negeerbareFeatures) => {
         if (negeerbareFeatures.filter((feature) => config.dubbele_features.includes(feature)).length > 2) return 0;
     }
 
+    negeerbareFeatures.push(featureId);
+
     return afstand;
 };
