@@ -74,7 +74,7 @@ const stationVertrekkenMoment = (station, minimumTijdMinuten, maximumTijdMinuten
     for (const [_, vertrek] of vertrekken[station].entries()) {
         const vertrekTijdMinuten = vertrek.vertrektijd;
         if (vertrekTijdMinuten >= minimumTijdMinuten && vertrekTijdMinuten <= maximumTijdMinuten && rijdtOpDag(vertrek.rit, config.dag)) {
-            resultaat.push(vertrek);
+            resultaat.push(vertrek.rit);
         };
     }
     return resultaat;
