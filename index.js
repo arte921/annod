@@ -7,7 +7,8 @@ const {
 } = require('./functies/utility.js');
 
 const {
-    stationVertrekkenMoment
+    stationVertrekkenMoment,
+    stationsNaam
 } = require('./functies/interpreters.js');
 
 const config = leesJSONSync("config");
@@ -16,8 +17,6 @@ const stations = leesJSONSync('stations');
 
 const startTijdMinuten = tijdNaarMinutenGetal(config.starttijd);
 const eindTijdMinuten = startTijdMinuten - - config.speelduur_minuten;
-
-const stationsNaam = (stationsCode) => stations.find((kandidaat) => stationsCode == kandidaat[1])[9];
 
 let meesteAfstand = 0;
 
@@ -41,14 +40,13 @@ const berekenRitjes = (aankomstTijdMinuten, station, negeerbareFeaturesReferenti
 
     if (huidigeAfstand > meesteAfstand) {
         meesteAfstand = huidigeAfstand;
-        const routeString = "afstand: " + (Math.round(huidigeAfstand * 10) / 10) + " km\n" + routeTotNuToe.map((deel, index) => [
-            minutenGetalNaarTijd,
-            stationsNaam,
-            minutenGetalNaarTijd
-        ][index % 3](deel)).join("\n") + "\n";
-        
+                
         if (meesteAfstand >= config.minimale_update_afstand) {
-            console.log(routeString);
+            console.log("afstand: " + (Math.round(huidigeAfstand * 10) / 10) + " km\n" + routeTotNuToe.map((deel, index) => [
+                minutenGetalNaarTijd,
+                stationsNaam,
+                minutenGetalNaarTijd
+            ][index % 3](deel)).join("\n") + "\n");
         }
     }
 

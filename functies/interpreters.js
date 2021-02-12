@@ -14,6 +14,8 @@ const stations = leesJSONSync('stations');
 const dienstregeling = leesJSONSync('dienstregeling');
 const voetnoten = leesJSONSync('voetnoten');
 
+const stationsNaam = (stationsCode) => stations.find((kandidaat) => stationsCode == kandidaat[1])[9];
+
 // rekent eindstation standaard niet mee
 // > beginstation
 // . korte stop
@@ -72,8 +74,7 @@ const rijdtOpDag = (rit, dag) => {
 const stationVertrekkenMoment = (station, minimumTijdMinuten, maximumTijdMinuten) => {
     let resultaat = [];
     for (const [_, vertrek] of vertrekken[station].entries()) {
-        const vertrekTijdMinuten = vertrek.vertrektijd;
-        if (vertrekTijdMinuten >= minimumTijdMinuten && vertrekTijdMinuten <= maximumTijdMinuten && rijdtOpDag(vertrek.rit, config.dag)) {
+        if (vertrek.vertrektijd >= minimumTijdMinuten && vertrek.vertrektijd <= maximumTijdMinuten) {
             resultaat.push(vertrek);
         };
     }
@@ -86,5 +87,6 @@ module.exports = {
     ritVanafStation,
     vertrekTijd,
     rijdtOpDag,
-    stationVertrekkenMoment
+    stationVertrekkenMoment,
+    stationsNaam
 };
