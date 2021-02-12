@@ -3,15 +3,12 @@ const leesJSONSync = require('./functies/leesJSONSync.js');
 
 const {
     tijdNaarMinutenGetal,
-    minutenGetalNaarTijd,
-    haalEnkeleRegelOp
+    minutenGetalNaarTijd
 } = require('./functies/utility.js');
 
 const {
-    ritVanafStation,
     stationVertrekkenMoment
 } = require('./functies/interpreters.js');
-const schrijfJSONSync = require('./functies/schrijfJSONSync.js');
 
 const config = leesJSONSync("config");
 const vertrekken = leesJSONSync('vertrekken');
@@ -60,19 +57,16 @@ const berekenRitjes = (aankomstTijdMinuten, station, negeerbareFeaturesReferenti
     let berekendeVertrekken = [];
 
     for (const rit of ritjes) {
-        if (!config.toegestane_treintypen.includes(haalEnkeleRegelOp(rit, "&")[0])) continue;
-        const richting = haalEnkeleRegelOp(rit, "<")[0];
-        if (richting == nietVolgen) continue;
-        if (berekendeVertrekken.includes(richting)) continue;
-        berekendeVertrekken.push(richting);
+        if (rit.richting == nietVolgen) continue;
+        if (berekendeVertrekken.includes(rit.richting)) continue;
+        berekendeVertrekken.push(rit.richting);
 
         let afstand = huidigeAfstand;
         
-        const verdereRit = ritVanafStation(rit, station);
-        const vertrekTijd = verdereRit[0].vertrektijd;
+        const vertrekTijd = rit.verdererit[0].vertrektijd;
 
         let vorigeStation = station;
-        for (const vertrek of verdereRit.slice(1)) {
+        for (const vertrek of rit.verdererit.slice(1)) {
             afstand += stationAfstandKilonet(vorigeStation, vertrek.station, negeerbareFeatures);
 
             // er wordt op het station gestopt
@@ -84,7 +78,7 @@ const berekenRitjes = (aankomstTijdMinuten, station, negeerbareFeaturesReferenti
                     afstand,
                     [...routeTotNuToe, vertrekTijd, vertrek.aankomsttijd, vertrek.station],
                     [...routeDeltas, afstand - huidigeAfstand],
-                    richting
+                    rit.richting
                 );
             }
 
@@ -92,7 +86,7 @@ const berekenRitjes = (aankomstTijdMinuten, station, negeerbareFeaturesReferenti
         }
     }
 };
-
+console.log(stationVertrekkenMoment('lw', 600, 660))
 console.log("==========BEGIN==========");
 
 berekenRitjes(

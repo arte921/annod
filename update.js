@@ -1,19 +1,24 @@
 const {
     splitRegels,
     splitEntries,
-    tijdNaarMinutenGetal
+    tijdNaarMinutenGetal,
+    haalEnkeleRegelOp
 } = require('./functies/utility.js');
 
 const {
     stopStations,
-    vertrekTijd
+    vertrekTijd,
+    ritVanafStation
 } = require('./functies/interpreters.js');
 
 const schrijfJSONSync = require('./functies/schrijfJSONSync.js');
 const leesIFFSync = require('./functies/leesIFFSync.js');
+const leesJSONSync = require('./functies/leesJSONSync.js');
 
 const dienstregeling = leesIFFSync('timetbls').split("#").map((entry) => "#" + entry).slice(1);
 const voetnoten = leesIFFSync('footnote').split("#").slice(1).map((entry) => splitRegels(entry)[1]);
+
+const config = leesJSONSync('config');
 
 // 29676
 
@@ -25,6 +30,7 @@ const stations = splitRegels(leesIFFSync('stations'))
 const vertrekken = {};
 
 for (const rit of dienstregeling) {
+    if (!config.toegestane_treintypen.includes(haalEnkeleRegelOp(rit, "&")[0])) continue;
     const stops = stopStations(rit);
     for (const station of stations) {
         const stationsCode = station[1];
@@ -33,7 +39,9 @@ for (const rit of dienstregeling) {
             if (!vertrekken[stationsCode]) vertrekken[stationsCode] = [];
             vertrekken[stationsCode].push({
                 rit: rit,
-                vertrektijd: tijdNaarMinutenGetal(vertrekTijd(rit, stationsCode))
+                vertrektijd: tijdNaarMinutenGetal(vertrekTijd(rit, stationsCode)),
+                richting: haalEnkeleRegelOp(rit, "<")[0],
+                verdererit: ritVanafStation(rit, stationsCode)
             });
         }
     }
