@@ -86,7 +86,7 @@ const berekenRitjes = (aankomstTijdMinuten, station, negeerbareFeaturesReferenti
         }
     }
 };
-console.log(stationVertrekkenMoment('lw', 600, 660))
+
 console.log("==========BEGIN==========");
 
 berekenRitjes(
