@@ -1,4 +1,4 @@
-const stationAfstandKilonet = require('./functies/stationAfstandKilonet.js');
+const stationAfstand = require('./functies/stationAfstand.js');
 const leesJSONSync = require('./functies/leesJSONSync.js');
 
 const {
@@ -65,7 +65,7 @@ const berekenRitjes = (aankomstTijdMinuten, station, negeerbareFeaturesReferenti
 
         let vorigeStation = station;
         for (const vertrek of rit.verdererit.slice(1)) {
-            afstand += stationAfstandKilonet(vorigeStation, vertrek.station, negeerbareFeatures);
+            afstand += stationAfstand(vorigeStation, vertrek.station, negeerbareFeatures);
 
             // er wordt op het station gestopt
             if (vertrek.stopt) {

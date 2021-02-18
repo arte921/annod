@@ -15,10 +15,12 @@ const {
 const schrijfJSONSync = require('./functies/schrijfJSONSync.js');
 const leesIFFSync = require('./functies/leesIFFSync.js');
 const leesJSONSync = require('./functies/leesJSONSync.js');
+const coordinaatAfstand = require('./functies/coordinaatAfstand.js');
 
 const kilonet = splitRegels(leesIFFSync("kilonetnew"));
 const dienstregeling = leesIFFSync('timetbls').split("#").map((entry) => "#" + entry).slice(1);
 const voetnoten = leesIFFSync('footnote').split("#").slice(1).map((entry) => splitRegels(entry)[1]);
+const spoorkaart = leesJSONSync("spoorkaart").payload.features;
 
 const config = leesJSONSync('config');
 
@@ -35,6 +37,17 @@ kilonet.forEach((entry) => {
     const waarden = splitEntries(entry);
     const featureId = [waarden[0], waarden[1]].sort().join("-");
     kilonetids[featureId] = waarden[3] - 0 + 0.01 * waarden[4];
+});
+
+const afstandids = {};
+
+spoorkaart.forEach((feature) => {
+    const featureId = [feature.properties.to, feature.properties.from].sort().join("-");
+    let afstand = 0;
+    feature.geometry.coordinates.forEach((coordinaat, index) => {
+        if (index > 1) afstand += coordinaatAfstand(coordinaat, feature.geometry.coordinates[index - 1])
+    });
+    afstandids[featureId] = afstand;
 });
 
 const vertrekken = {};
@@ -62,4 +75,5 @@ schrijfJSONSync(vertrekken, 'vertrekken');
 schrijfJSONSync(stations, 'stations');
 schrijfJSONSync(dienstregeling, 'dienstregeling');
 schrijfJSONSync(voetnoten, 'voetnoten');
+schrijfJSONSync(afstandids, 'afstandids');
 schrijfJSONSync(kilonetids, 'kilonetids');
