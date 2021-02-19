@@ -13,7 +13,6 @@ const {
 
 const config = leesJSONSync("config");
 const vertrekken = leesJSONSync('vertrekken');
-const stations = leesJSONSync('stations');
 
 const startTijdMinuten = tijdNaarMinutenGetal(config.starttijd);
 const eindTijdMinuten = startTijdMinuten - - config.speelduur_minuten;
