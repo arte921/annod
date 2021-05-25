@@ -7,6 +7,9 @@ const schrijfJSONSync = require('./functies/schrijfJSONSync.js');
 const leesIFFSync = require('./functies/leesIFFSync.js');
 const leesJSONSync = require('./functies/leesJSONSync.js');
 const stationsLijstPolyline = require('./functies/stationsLijstPolyline.js');
+const coordinaatAfstand = require('./functies/coordinaatAfstand.js');
+const polylineAfstand = require('./functies/polylineAfstand.js');
+
 const stations = leesJSONSync("stations");
 
 const stationscodelijst = stations.map((station) => station.code);
@@ -34,15 +37,39 @@ for (const rit of dienstregeling) {
             offset++;
         }
 
+        const vertrektijd = rit[i].vertrektijd;
+        const aankomsttijd = rit[i + offset].aankomsttijd;
+
         const stations = [...rit]
             .slice(i, i + offset + 1)
             .map((stop) => stop.station);
+        
+        const polyline = stationsLijstPolyline(stations);
+        const totaleafstand = coordinaatAfstand(polyline[0], polyline[polyline.length - 1]);
+        const snelheid = totaleafstand / (aankomsttijd - vertrektijd); // kilometer per minuut
+
+
+        let hoogte = vertrektijd;
+        const lijn = [{
+            lat: polyline[0].lat,
+            lng: polyline[0].lng,
+            hoogte: hoogte
+        }];
+
+        for (let j = 1; j < polyline.length; j++) {
+            hoogte += coordinaatAfstand(polyline[j], polyline[j - 1]) * snelheid;
+            lijn.push({
+                lat: polyline[j].lat,
+                lng: polyline[j].lng,
+                hoogte: hoogte
+            });
+        }
 
         alleritjes.push({
-            vertrektijd: rit[i].vertrektijd,
-            aankomsttijd: rit[i + offset].aankomsttijd,
+            vertrektijd: vertrektijd,
+            aankomsttijd: aankomsttijd,
             stations: stations,
-            polyline: stationsLijstPolyline(stations)
+            lijn: lijn
         })
 
         i += offset;
