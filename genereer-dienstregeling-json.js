@@ -46,7 +46,6 @@ for (const rit of dienstregeling) {
         const totaleafstand = polylineAfstand(polyline);
         const snelheid = totaleafstand / (aankomsttijd - vertrektijd); // kilometer per minuut
 
-
         let hoogte = vertrektijd;
         const lijn = [{
             lat: polyline[0].lat,
@@ -77,6 +76,6 @@ for (const rit of dienstregeling) {
 console.log(alleritjes.length);
 console.log(dienstregeling.length);
 console.log(alleritjes.length / dienstregeling.length + 1);
-console.log(alleritjes[111]);
+console.log(alleritjes[1146]);
 
 schrijfJSONSync(alleritjes, 'alleritjes');
