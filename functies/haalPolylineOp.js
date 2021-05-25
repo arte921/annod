@@ -6,5 +6,6 @@ module.exports = (stationa, stationb) => {
     if (rechtefeature) return rechtefeature.geometry.coordinates;
     const omgekeerdefeature = spoorkaart.payload.features.find((feature) => feature.properties.to == stationa.code && feature.properties.from == stationb.code);
     if (omgekeerdefeature) return [...omgekeerdefeature.geometry.coordinates].reverse();
+    console.log(stationa, stationb);
     return [stationa.coordinaat, stationb.coordinaat];
 };

@@ -28,8 +28,6 @@ const dienstregeling = leesIFFSync('timetbls')
 const alleritjes = [];
 
 for (const rit of dienstregeling) {
-    // console.log(rit.slice(0, 40));
-
     let i = 0;
     while (i + 1 < rit.length) {
         let offset = 1;
@@ -45,7 +43,7 @@ for (const rit of dienstregeling) {
             .map((stop) => stop.station);
         
         const polyline = stationsLijstPolyline(stations);
-        const totaleafstand = coordinaatAfstand(polyline[0], polyline[polyline.length - 1]);
+        const totaleafstand = polylineAfstand(polyline);
         const snelheid = totaleafstand / (aankomsttijd - vertrektijd); // kilometer per minuut
 
 
@@ -70,7 +68,7 @@ for (const rit of dienstregeling) {
             aankomsttijd: aankomsttijd,
             stations: stations,
             lijn: lijn
-        })
+        });
 
         i += offset;
     }
@@ -79,6 +77,6 @@ for (const rit of dienstregeling) {
 console.log(alleritjes.length);
 console.log(dienstregeling.length);
 console.log(alleritjes.length / dienstregeling.length + 1);
-console.log(alleritjes[110]);
+console.log(alleritjes[111]);
 
 schrijfJSONSync(alleritjes, 'alleritjes');
