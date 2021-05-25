@@ -43,10 +43,8 @@ for (const rit of dienstregeling) {
             .map((stop) => stop.station);
         
         const polyline = stationsLijstPolyline(stations);
-        const totaleafstand = polylineAfstand(polyline);
-        const snelheid = totaleafstand / (aankomsttijd - vertrektijd); // kilometer per minuut
 
-        let hoogte = vertrektijd;
+        let hoogte = 0;
         const lijn = [{
             lat: polyline[0].lat,
             lng: polyline[0].lng,
@@ -54,13 +52,15 @@ for (const rit of dienstregeling) {
         }];
 
         for (let j = 1; j < polyline.length; j++) {
-            hoogte += coordinaatAfstand(polyline[j], polyline[j - 1]) * snelheid;
+            hoogte += coordinaatAfstand(polyline[j], polyline[j - 1]);
             lijn.push({
                 lat: polyline[j].lat,
                 lng: polyline[j].lng,
                 hoogte: hoogte
             });
         }
+
+        lijn.forEach((punt) => punt.hoogte = vertrektijd + punt.hoogte / hoogte * (aankomsttijd - vertrektijd));
 
         alleritjes.push({
             vertrektijd: vertrektijd,
@@ -76,6 +76,6 @@ for (const rit of dienstregeling) {
 console.log(alleritjes.length);
 console.log(dienstregeling.length);
 console.log(alleritjes.length / dienstregeling.length + 1);
-console.log(alleritjes[1146]);
+console.log(alleritjes[13]);
 
 schrijfJSONSync(alleritjes, 'alleritjes');
